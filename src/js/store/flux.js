@@ -1,18 +1,11 @@
 const getState = ({ getStore, getActions, setStore }) => {
+
 	return {
 		store: {
-			demo: [
-				{
-					title: "FIRST",
-					background: "white",
-					initial: "white"
-				},
-				{
-					title: "SECOND",
-					background: "white",
-					initial: "white"
-				}
-			]
+			contacts : [], 
+			user: null,
+			errorMessageLogin : "",
+			errorMessageRegister : "",
 		},
 		actions: {
 			// Use getActions to call a function within a fuction
@@ -37,6 +30,104 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 				//reset the global store
 				setStore({ demo: demo });
+			},
+			saveContactToAPI: async (newContact) => {
+				const store = getStore()
+				const user = store.user
+				if(user) {
+					try{
+						let response = await fetch(`https://playground.4geeks.com/contact/agendas/${user}/contacts`, {
+							method: "POST",
+							headers: {
+								"Content-Type": "application/json",
+							},
+							body: JSON.stringify({
+								"name": newContact.name,
+								"email": newContact.email,
+								"phone": newContact.phone,
+								"address": newContact.address
+							})
+						})
+						let data = await response.json()
+						setStore({...store, contacts: [...store.contacts, data]})
+						return 
+					}catch(error){
+						console.log(error);
+						return
+					}
+				}
+				setStore({...store, contacts: [...store.contacts, newContact]})
+			},
+			loginAccount: async (loginUser) => {
+				const store = getStore()
+				try{
+					let response = await fetch(`https://playground.4geeks.com/contact/agendas/${loginUser}`,{
+					method: "GET"
+					})
+				let data = await response.json()
+				console.log(data)
+					if (data.detail === `Agenda \"${loginUser}\" doesn't exist.`){
+						setStore({...store, errorMessageLogin: data.detail})
+					} else {
+						setStore({ ...store, user: loginUser })
+						setStore({...store, errorMessageLogin: "Logged in!"})
+
+						const userInfo = await getActions().getInfoAccountContacts(loginUser)
+						setStore({...store, contacts: userInfo})
+					}
+					return
+				}catch(error){
+					console.log(error)
+					return
+				}
+			},
+			registerAccount: async (registerUser) => {
+				const store = getStore()
+				try{
+					let response = await fetch(`https://playground.4geeks.com/contact/agendas/${registerUser}`,{
+						method: "POST",
+						headers: {
+							"accept": "application/json",
+						}})
+					let data = await response.json()
+					console.log(data)
+					if (data.detail === `Agenda \"${registerUser}\" already exists.`){
+						setStore({...store, errorMessageRegister: data.detail})
+					} else {
+						setStore({ ...store, user: registerUser })
+						setStore({...store, errorMessageRegister: "Registered!"})
+					}
+					return
+				}catch(error){
+					console.log(error)
+					return
+				}
+			},
+			getInfoAccountContacts: async (user) => {
+				try{
+					let response = await fetch(`https://playground.4geeks.com/contact/agendas/${user}/contacts`, {
+						method: "GET",
+					})
+					let data = await response.json()
+					return data.contacts
+				} catch(error){}
+			},
+			deleteContactFromAPI: async(id, index) => {
+				const store = getStore()
+				const user = store.user
+				if(user){
+					try {
+						let response = await fetch (`https://playground.4geeks.com/contact/agendas/${user}/contacts/${id}`, {
+							method: "DELETE",
+							body: JSON.stringify({
+								"id" : id,
+							})
+						})
+					} catch (error) {
+						console.log(error)
+					}
+				}
+				setStore ({...store, contacts: store.contacts.filter((_, i) => i !== index)})
 			}
 		}
 	};
