@@ -65,17 +65,17 @@ const getState = ({ getStore, getActions, setStore }) => {
 					method: "GET"
 					})
 				let data = await response.json()
-				console.log(data)
-					if (data.detail === `Agenda \"${loginUser}\" doesn't exist.`){
+				if (data.detail === `Agenda \"${loginUser}\" doesn't exist.`){
 						setStore({...store, errorMessageLogin: data.detail})
-					} else {
+						window.localStorage.setItem('my-user-name', JSON.stringify(""))
+				} else {
 						setStore({ ...store, user: loginUser })
 						setStore({...store, errorMessageLogin: "Logged in!"})
 
 						const userInfo = await getActions().getInfoAccountContacts(loginUser)
 						setStore({...store, contacts: userInfo})
-					}
-					return
+				}
+				return
 				}catch(error){
 					console.log(error)
 					return
@@ -95,6 +95,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 						setStore({...store, errorMessageRegister: data.detail})
 					} else {
 						setStore({ ...store, user: registerUser })
+						setStore({ ...store, contacts: [] })
 						setStore({...store, errorMessageRegister: "Registered!"})
 					}
 					return
@@ -128,6 +129,59 @@ const getState = ({ getStore, getActions, setStore }) => {
 					}
 				}
 				setStore ({...store, contacts: store.contacts.filter((_, i) => i !== index)})
+			},
+			logOutAccount: () =>{
+				const store = getStore()
+				setStore(store.user = null)
+				setStore(store.contacts = [])
+				window.localStorage.setItem('my-user-name', JSON.stringify(null))
+				getActions().setOfflineStore()
+			},
+			setOfflineStore: () => {
+				const store = getStore()
+				const localStoredContactsData = JSON.parse(window.localStorage.getItem('my-offline-contacts'))
+				if (localStoredContactsData.length > 0) {
+					console.log("setting offline store");
+					setStore({...store, contacts: localStoredContactsData})
+				}
+			},
+			editContactForAPI: async(index) => {
+				const store = getStore()
+				const contact = store.contacts[index]
+				const contactId = contact.id
+				
+				const user = store.user
+				if(user) {
+					try{
+						await fetch(`https://playground.4geeks.com/contact/agendas/${user}/contacts/${contactId}`, {
+							method: "PUT",
+							headers: {
+								"Content-Type": "application/json",
+							},
+							body: JSON.stringify({
+								"name": contact.name,
+								"email": contact.email,
+								"phone": contact.phone,
+								"address": contact.address
+							})
+						})
+						return 
+					}catch(error){
+						console.log(error);
+						return
+					}
+				}
+			},
+			editOfflineStore: (value, index, lineName) => {
+				const store = getStore()
+				setStore({...store, contacts: store.contacts.map((contact, i) => {
+					if(index === i) {
+						return {
+							...contact, [lineName]: value
+						}
+					}
+					return contact
+				})})
 			}
 		}
 	};

@@ -8,21 +8,20 @@ export const Navbar = () => {
 	const [loginUser, setLoginUser] = useState("")
 	const [registerUser, setRegisterUser] = useState("")
 
-
 	return (
 		<>
 		<nav className="navbar navbar-light bg-light mb-3">
 			<Link to="/">
-				<span className="navbar-brand mb-0 h1">React Boilerplate</span>
+				<span className="navbar-brand mb-0 h1 ms-4">React Boilerplate</span>
 			</Link>
 			{store.user ?
 				<div className="d-flex ml-auto gap-2 mx-4 ">
 					<p className="my-auto">Welcome <strong>{store.user}</strong>!</p>
 					<button className="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalLogin">
-						<i class="fa-solid fa-user"></i>
+						<i className="fa-solid fa-user"></i>
 					</button>
-					<button className="btn btn-danger">
-						<i class="fa-solid fa-arrow-right-from-bracket"></i>
+					<button className="btn btn-danger" onClick={() => actions.logOutAccount()}>
+						<i className="fa-solid fa-arrow-right-from-bracket"></i>
 					</button>
 				</div>
 				:
