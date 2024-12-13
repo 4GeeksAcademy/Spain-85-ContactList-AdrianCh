@@ -2,11 +2,14 @@
     .current-contacts, .button-media-adjuster {
         width: 95%;
     }
-    img {
-        display: none;
+    img, .image-container {
+        display: none !important;
     }
-    .image-container {
-        width: 0%;
+    .info-container  {
+        width: 80%;
+    }
+    .user-settings-container{
+        width: 20%;
     }
 }
 
@@ -14,13 +17,18 @@
     .current-contacts, .button-media-adjuster {
         width: 95%;
     }
-    img {
-        width: 100px;
-        max-height: 100px;
+    img, .image-container {
+        display: none !important;
+    }
+    .info-container {
+        width: 70%;
+    }
+    .user-settings-container{
+        width: 30%;
     }
 }
 
-@media (min-width: 768px) {
+@media (min-width: 426px) and (max-width: 768px) {
     .current-contacts, .button-media-adjuster {
         width: 80%;
     }
@@ -28,28 +36,33 @@
         width: 150px;
         max-height: 150px;
     }
+    .image-container, .info-container, .user-settings-container {
+        width: 33.3%;
+    }
 }
 
-@media (min-width: 1440px) {
+@media (min-width: 768px) and (max-width: 1440px) {
     .current-contacts, .button-media-adjuster {
         width: 80%;
     }
     img {
-        width: 200px;
-        max-height: 200px;
+        width: 150px;
+        max-height: 150px;
+    }
+    .image-container, .info-container, .user-settings-container {
+        width: 33.3%;
     }
 }
 
-@media (min-width: 2560px) {
+@media (min-width: 1440px) and (max-width: 2560px) {
     .current-contacts, .button-media-adjuster {
         width: 70%;
     }
     img {
-        width: 300px;
-        max-height: 300px;
+        width: 250px;
+        max-height: 250px;
     }
-}
-
-.image-container, .info-container, .user-settings-container {
-    width: 33.3%;
+    .image-container, .info-container, .user-settings-container {
+        width: 33.3%;
+    }
 }

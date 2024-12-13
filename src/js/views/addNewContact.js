@@ -25,7 +25,8 @@ export const Demo = () => {
 		})
 	}
 
-	async function logNewContact() {
+	async function logNewContact(e) {
+		e.preventDefault()
 		await actions.saveContactToAPI(newContact)
 		navigate("/")
 	}
@@ -33,16 +34,12 @@ export const Demo = () => {
 	async function getLocation(e) {
 		e.preventDefault()
 		navigator.geolocation.getCurrentPosition(function (position) {
-			console.log(`Latitude is ${position.coords.latitude}`);
-			console.log(`Latitude is ${position.coords.longitude}`);
 			fromLatLng(position.coords.latitude, position.coords.longitude)
 			.then(({ results }) => {
-				console.log(results);
 				setNewContact({
 					...newContact, 
 					address: results[6].formatted_address
 				});
-				console.log(newContact);
 			})
 			.catch(console.error);
 		})
@@ -71,7 +68,7 @@ export const Demo = () => {
 					<button className="btn btn-dark" onClick={(e) => getLocation(e)}><i className="fa-solid fa-location-dot"></i></button>
 				</div>
 			
-				<div><button className="btn btn-success mt-2" onClick={logNewContact}>Save</button></div>
+				<div><button className="btn btn-success mt-2" onClick={(e) => logNewContact(e)}>Save</button></div>
 			</form>
 			<br />
 			<Link to="/">

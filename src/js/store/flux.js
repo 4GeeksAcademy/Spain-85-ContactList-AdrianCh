@@ -69,11 +69,11 @@ const getState = ({ getStore, getActions, setStore }) => {
 						setStore({...store, errorMessageLogin: data.detail})
 						window.localStorage.setItem('my-user-name', JSON.stringify(""))
 				} else {
-						setStore({ ...store, user: loginUser })
-						setStore({...store, errorMessageLogin: "Logged in!"})
+					setStore({ ...store, user: loginUser })
+					setStore({...store, errorMessageLogin: "Logged in!"})
 
-						const userInfo = await getActions().getInfoAccountContacts(loginUser)
-						setStore({...store, contacts: userInfo})
+					const userInfo = await getActions().getInfoAccountContacts(loginUser)
+					setStore({...store, contacts: userInfo})
 				}
 				return
 				}catch(error){
@@ -143,6 +143,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 				if (localStoredContactsData.length > 0) {
 					console.log("setting offline store");
 					setStore({...store, contacts: localStoredContactsData})
+				} else {
+					setStore({...store, contacts: []})
 				}
 			},
 			editContactForAPI: async(index) => {

@@ -48,7 +48,7 @@ export const Navbar = () => {
 					</div>
 					<div className="modal-footer">
 						<button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-						<button type="button" className="btn btn-success" onClick={() => actions.loginAccount(loginUser)}>Login</button>
+						<button type="button" className="btn btn-success" onClick={loginUser !== "" ? () => actions.loginAccount(loginUser) : () => {}} >Login</button>
 					</div>
 				</div>
 			</div>
@@ -70,7 +70,7 @@ export const Navbar = () => {
 					</div>
 					<div className="modal-footer">
 						<button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-						<button type="button" className="btn btn-success" onClick={() => actions.registerAccount(registerUser)} >Register</button>
+						<button type="button" className="btn btn-success" onClick={registerUser !== "" ? () => actions.registerAccount(registerUser) : () => {}} >Register</button>
 					</div>
 				</div>
 			</div>

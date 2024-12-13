@@ -23,12 +23,18 @@ const injectContext = PassedComponent => {
 
 		useEffect(() => {
 			const data = window.localStorage.getItem('my-user-name');
+			const offlineContacts = window.localStorage.getItem('my-offline-contacts')
 			const parsedData = JSON.parse(data);
 			if (parsedData !== "" && parsedData !== null) {
 				state.actions.loginAccount(parsedData)
-			} else {
+			if(offlineContacts.length > 1)
 				state.actions.setOfflineStore()
-				}
+			}
+			if(!offlineContacts && !data) {
+				window.localStorage.setItem('my-user-name', JSON.stringify(null))
+				window.localStorage.setItem('my-offline-contacts', JSON.stringify([]))
+				state.actions.setOfflineStore()
+			}
 		}, []);
 
 		// The initial value for the context is not null anymore, but the current state of this component,
