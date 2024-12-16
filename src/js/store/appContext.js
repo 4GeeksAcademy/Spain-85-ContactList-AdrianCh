@@ -1,11 +1,8 @@
 import React, { useState, useEffect } from "react";
 import getState from "./flux.js";
 
-// Don't change, here is where we initialize our context, by default it's just going to be null.
 export const Context = React.createContext(null);
 
-// This function injects the global store to any view/component where you want to use it, we will inject the context to layout.js, you can see it here:
-// https://github.com/4GeeksAcademy/react-hello-webapp/blob/master/src/js/layout.js#L35
 const injectContext = PassedComponent => {
 	const StoreWrapper = props => {
 		//this will be passed as the contenxt value
@@ -21,21 +18,22 @@ const injectContext = PassedComponent => {
 			})
 		);
 
+		// On.load logic to get: Username OR Offline Contacts OR Creating a local.storage (for first time users)
 		useEffect(() => {
-			const data = window.localStorage.getItem('my-user-name');
-			const offlineContacts = window.localStorage.getItem('my-offline-contacts')
-			const parsedData = JSON.parse(data);
-			if (parsedData !== "" && parsedData !== null) {
-				state.actions.loginAccount(parsedData)
-			if(offlineContacts.length > 1)
-				state.actions.setOfflineStore()
+			const userData = window.localStorage.getItem('my-user-name');
+			const offlineContactsData = window.localStorage.getItem('my-offline-contacts');
+			const parsedUser = JSON.parse(userData); // Parse user data
+			const parsedOfflineContacts = offlineContactsData ? JSON.parse(offlineContactsData) : [];
+			if (parsedUser) {
+			  state.actions.loginAccount(parsedUser);
+			} else if (parsedOfflineContacts.length > 0) {
+			  state.actions.setOfflineStore(parsedOfflineContacts);
+			} else {
+			  window.localStorage.setItem('my-user-name', JSON.stringify(null));
+			  window.localStorage.setItem('my-offline-contacts', JSON.stringify([]));
+			  state.actions.setOfflineStore([]);
 			}
-			if(!offlineContacts && !data) {
-				window.localStorage.setItem('my-user-name', JSON.stringify(null))
-				window.localStorage.setItem('my-offline-contacts', JSON.stringify([]))
-				state.actions.setOfflineStore()
-			}
-		}, []);
+		  }, []);
 
 		// The initial value for the context is not null anymore, but the current state of this component,
 		// the context will now have a getStore, getActions and setStore functions available, because they were declared

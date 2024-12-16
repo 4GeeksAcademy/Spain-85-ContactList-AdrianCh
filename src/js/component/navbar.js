@@ -5,6 +5,7 @@ import {Context} from "../store/appContext"
 
 export const Navbar = () => {
 	const {store, actions} = useContext(Context)
+	// States for managing inputs
 	const [loginUser, setLoginUser] = useState("")
 	const [registerUser, setRegisterUser] = useState("")
 

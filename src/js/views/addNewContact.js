@@ -9,8 +9,11 @@ setKey("AIzaSyCiSI_arVYbxCqMrF7xVKx3-XEK6O2i3Qo");
 
 export const Demo = () => {
 	const {store, actions} = useContext(Context)
+
+	// Hooks cant be used in a function
 	const navigate = useNavigate()
 
+	// State obj for adding a new Contact
 	const [newContact, setNewContact] = useState({
 		name: "",
 		email: "",
@@ -18,6 +21,7 @@ export const Demo = () => {
 		address: ""
 	})
 
+	// Handles the inputs of the form to update the state dynamically
 	const handleForm = (e) => {
 		setNewContact({
 			...newContact, 
@@ -25,12 +29,14 @@ export const Demo = () => {
 		})
 	}
 
+	// When adding a newContact, saves to API and waits for log before navigating to home
 	async function logNewContact(e) {
 		e.preventDefault()
 		await actions.saveContactToAPI(newContact)
 		navigate("/")
 	}
 
+	// Gets the location on click and adds it to the adress
 	async function getLocation(e) {
 		e.preventDefault()
 		navigator.geolocation.getCurrentPosition(function (position) {
@@ -44,10 +50,6 @@ export const Demo = () => {
 			.catch(console.error);
 		})
 	}
-
-	useEffect(() => {
-        console.log("Updated contact: ", newContact);
-    }, [newContact]);
 	
 	return (
 		<div className="container">	

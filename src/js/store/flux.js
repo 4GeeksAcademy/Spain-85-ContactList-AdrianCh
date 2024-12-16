@@ -8,29 +8,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			errorMessageRegister : "",
 		},
 		actions: {
-			// Use getActions to call a function within a fuction
-			exampleFunction: () => {
-				getActions().changeColor(0, "green");
-			},
-			loadSomeData: () => {
-				/**
-					fetch().then().then(data => setStore({ "foo": data.bar }))
-				*/
-			},
-			changeColor: (index, color) => {
-				//get the store
-				const store = getStore();
-
-				//we have to loop the entire demo array to look for the respective index
-				//and change its color
-				const demo = store.demo.map((elm, i) => {
-					if (i === index) elm.background = color;
-					return elm;
-				});
-
-				//reset the global store
-				setStore({ demo: demo });
-			},
+			// Saves to API and sets store State IF theres a user
 			saveContactToAPI: async (newContact) => {
 				const store = getStore()
 				const user = store.user
@@ -58,6 +36,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 				setStore({...store, contacts: [...store.contacts, newContact]})
 			},
+			// Logs into account or shows error, also saves username in local-storage
 			loginAccount: async (loginUser) => {
 				const store = getStore()
 				try{
@@ -81,6 +60,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					return
 				}
 			},
+			// Creates new account and saves it in local storage
 			registerAccount: async (registerUser) => {
 				const store = getStore()
 				try{
@@ -104,6 +84,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					return
 				}
 			},
+			// Method function for getting info-contacts
 			getInfoAccountContacts: async (user) => {
 				try{
 					let response = await fetch(`https://playground.4geeks.com/contact/agendas/${user}/contacts`, {
@@ -113,6 +94,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					return data.contacts
 				} catch(error){}
 			},
+			// Delete button for contacts for API and localstorage
 			deleteContactFromAPI: async(id, index) => {
 				const store = getStore()
 				const user = store.user
@@ -130,6 +112,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 				setStore ({...store, contacts: store.contacts.filter((_, i) => i !== index)})
 			},
+			// Logs out and eliminates user from local storage
 			logOutAccount: () =>{
 				const store = getStore()
 				setStore(store.user = null)
@@ -137,6 +120,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				window.localStorage.setItem('my-user-name', JSON.stringify(null))
 				getActions().setOfflineStore()
 			},
+			// Gets info from localstorage OR creates a new localstorage
 			setOfflineStore: () => {
 				const store = getStore()
 				const localStoredContactsData = JSON.parse(window.localStorage.getItem('my-offline-contacts'))
@@ -147,6 +131,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					setStore({...store, contacts: []})
 				}
 			},
+			// Edit contact in front page
 			editContactForAPI: async(index) => {
 				const store = getStore()
 				const contact = store.contacts[index]
@@ -174,6 +159,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					}
 				}
 			},
+			// Edits the state of the contacts.store."line you are editing"
 			editOfflineStore: (value, index, lineName) => {
 				const store = getStore()
 				setStore({...store, contacts: store.contacts.map((contact, i) => {

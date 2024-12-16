@@ -4,33 +4,43 @@ import { Link , Await} from "react-router-dom";
 import "../../styles/home.css";
 
 const Home = () => {
+	// Array inside of an object just in case we need to add more states: isEditing = true ?
 	const [editMode, setEditMode] = useState({arrayIndex: []})
 	const {store, actions} = useContext(Context)
 
 	const user = store.user
 
+	// Puts the index of the contact inside of the array
 	function editContact(index) {
 		setEditMode({...editMode, arrayIndex: [...editMode.arrayIndex, index]})
 	}
 
+	// Sends id and index to delete from localstorage or API
 	function deleteContact(index) {
 		let id = store.contacts[index].id
 		actions.deleteContactFromAPI(id, index)
 	}
 
+	// Updates user on user State change in localstorage
 	useEffect (() => {
 		if (user !== "" && user !== null){
 			window.localStorage.setItem('my-user-name', JSON.stringify(user))
 		}
 	}, [user])
 
+	// if no offline-contacts, creates new. Updates in localstorage
 	useEffect(() => {
-		const savedOfflineContacts = JSON.parse(window.localStorage.getItem('my-offline-contacts') || "[]");
-		if(!user && savedOfflineContacts.length > 0 && store.contacts.length > 0) {
-			window.localStorage.setItem('my-offline-contacts', JSON.stringify(store.contacts));	
-			console.log("updating in offline mode");
+		console.log("Updating local storage if necessary...");
+		const savedOfflineContacts = JSON.parse(window.localStorage.getItem('my-offline-contacts') ?? "[]");
+	  
+		if (!user && store.contacts.length > 0) {
+		  const isUpdated = JSON.stringify(savedOfflineContacts) !== JSON.stringify(store.contacts);
+		  if (isUpdated) {
+			window.localStorage.setItem('my-offline-contacts', JSON.stringify(store.contacts));
+			console.log("Updated my-offline-contacts:", store.contacts);
+		  }
 		}
-	}, [store.contacts])
+	  }, [store.contacts, user]);  
 
 
 	return (
