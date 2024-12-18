@@ -100,7 +100,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				const user = store.user
 				if(user){
 					try {
-						let response = await fetch (`https://playground.4geeks.com/contact/agendas/${user}/contacts/${id}`, {
+						await fetch (`https://playground.4geeks.com/contact/agendas/${user}/contacts/${id}`, {
 							method: "DELETE",
 							body: JSON.stringify({
 								"id" : id,
@@ -111,6 +111,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					}
 				}
 				setStore ({...store, contacts: store.contacts.filter((_, i) => i !== index)})
+				window.localStorage.setItem('my-offline-contacts', JSON.stringify(store.contacts))
 			},
 			// Logs out and eliminates user from local storage
 			logOutAccount: () =>{
